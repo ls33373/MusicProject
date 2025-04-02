@@ -1,0 +1,27 @@
+{
+  "name": "pungsaeng-music",
+  "version": "1.0.0",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "vercel-build": "echo 'Build step completed'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "간단한 웹 기반 음악 신청 시스템입니다. 학생들이 노래를 신청하고 방송반이 신청 목록을 확인할 수 있습니다.",
+  "dependencies": {
+    "axios": "^1.8.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.12.2",
+    "node-cron": "^3.0.3",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9",
+    "tailwindcss": "^4.0.15"
+  }
+}

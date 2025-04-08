@@ -98,6 +98,11 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
+// 방송부 전용 페이지 라우트
+app.get("/broadcast", (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "broadcast.html"));
+});
+
 // 에러 핸들링 미들웨어
 app.use((err, req, res, next) => {
     console.error('서버 에러:', err);
@@ -106,6 +111,8 @@ app.use((err, req, res, next) => {
         message: process.env.NODE_ENV === 'development' ? err.message : undefined
     });
 });
+
+// 
 
 // 서버 시작 (로컬 개발 환경에서만)
 const PORT = process.env.PORT || 3000;

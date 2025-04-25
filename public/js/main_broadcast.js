@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <span class="text-sm text-gray-500">-</span>
                                 <span class="text-sm text-gray-500">${request.artist}</span>
                             </div>
-                            <p class="text-gray-600 text-sm">${request.reason}</p>
+                            <p class="text-gray-600 text-sm max-w-700">${request.reason}</p>
                         </div>
                         <div class="flex items-center flex-col gap-3">
                             <span class="text-xs text-gray-400 mt-1 lg:mt-0">${formatDate(request.createdAt)}</span>

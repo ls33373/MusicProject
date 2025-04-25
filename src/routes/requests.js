@@ -15,6 +15,7 @@ router.get('/', async (req, res) => {
 
 // 새로운 신청 생성
 router.post('/', async (req, res) => {
+    
     const request = new Request({
         title: req.body.title,
         artist: req.body.artist,
@@ -32,7 +33,7 @@ router.post('/', async (req, res) => {
 // 일주일 급식 불러오기
 router.get("/food", async (req, res) => {
     try {
-        const response = await Food.find({"week": new Date().getDay()}).sort({"sorting": 1});
+        const response = await Food.find({"date": new Date().getDay()});
         res.json(response);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -55,6 +56,22 @@ router.post('/reset', async (req, res) => {
         const result = await Request.deleteMany({});
         res.status(200).json({ 
             message: '데이터베이스가 성공적으로 초기화되었습니다.',
+            deletedCount: result.deletedCount
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// 노래 삭제
+router.delete("/delete", async (req, res) => {
+    try {
+        const { createdAt } = req.body;
+        const date = new Date(createdAt); // 데이터베이스에 저장된 형태(Date)에 맞게 수정
+        const result = await Request.deleteOne({ createdAt: date });
+
+        res.status(201).json({
+            message: "노래 데이터를 성공적으로 삭제했습니다.",
             deletedCount: result.deletedCount
         });
     } catch (error) {

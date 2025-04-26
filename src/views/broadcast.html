@@ -107,32 +107,34 @@
         // 삭제 버튼 클릭 시 이벤트 처리
         async function deleteMusic(button) {
             try {
-                const response = await axios.delete("/api/requests/delete", {
-                    data: { createdAt: button.id }
-                });
+                let deleted = confirm("노래를 정말로 삭제하사겠습니까?");
+                if (deleted) {
+                    const response = await axios.delete("/api/requests/delete", {
+                        data: { createdAt: button.id }
+                    });
 
-                if (response.status === 201) {
-                    let currentElement = button;
-        
-                    while (currentElement && !currentElement.classList.contains('song')) {
-                        currentElement = currentElement.parentElement;
-                    }
+                    if (response.status === 201) {
+                        let currentElement = button;
+            
+                        while (currentElement && !currentElement.classList.contains('song')) {
+                            currentElement = currentElement.parentElement;
+                        }
 
-                    if (currentElement) {
-                        currentElement.remove();
-                        console.log('div 삭제 완료');
+                        if (currentElement) {
+                            currentElement.remove();
+                            alert("성공적으로 삭제헸습니다.");
+                        } else {
+                            console.error('삭제할 div를 찾지 못했습니다.');
+                        }
                     } else {
-                        console.error('삭제할 div를 찾지 못했습니다.');
+                        new Error("노래를 삭제하지 못했습니다.");
                     }
-                } else {
-                    new Error("노래를 삭제하지 못했습니다.")
                 }
             }
             catch (error) {
                 console.error('삭제 중 오류가 발생했습니다:', error);
                 alert('삭제 중 오류가 발생했습니다. 다시 시도해주세요.');
             }
-
         };
     </script>
 

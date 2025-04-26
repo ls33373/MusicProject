@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
     let isAscending = true; // 기본값은 오름차순
-    console.log("1")
 
     // 날짜 포맷팅 함수
     function formatDate(dateString) {

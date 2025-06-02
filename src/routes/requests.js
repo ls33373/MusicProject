@@ -19,7 +19,10 @@ router.post('/', async (req, res) => {
     const request = new Request({
         title: req.body.title,
         artist: req.body.artist,
-        reason: req.body.reason
+        reason: req.body.reason,
+        writer: req.body.writer,
+        isBlank: req.body.isBlank,
+        isAnnonymous: req.body.isAnnonymous
     });
 
     try {
@@ -33,7 +36,7 @@ router.post('/', async (req, res) => {
 // 일주일 급식 불러오기
 router.get("/food", async (req, res) => {
     try {
-        const response = await Food.find({"date": new Date().getDay()});
+        const response = await Food.find({"date": new Date().getDate()});
         res.json(response);
     } catch (error) {
         res.status(500).json({ message: error.message });

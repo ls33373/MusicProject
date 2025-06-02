@@ -9,10 +9,6 @@ const foodSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    week: {
-        type: Number,
-        required: true
-    }
 });
 
 module.exports = mongoose.model('Food', foodSchema);

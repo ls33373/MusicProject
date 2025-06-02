@@ -13,6 +13,18 @@ const requestSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    isBlank: {
+        type: Boolean,
+        required: true
+    },
+    writer: {
+        type: String,
+        required: true
+    },
+    isAnnonymous: {
+        type: Boolean,
+        required: true
+    },
     createdAt: {
         type: Date,
         default: Date.now

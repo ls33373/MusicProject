@@ -99,10 +99,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <span class="text-xs text-gray-400 mt-1 lg:mt-0">${formatDate(request.createdAt)}</span>
                     </div>
-                    <p class="text-gray-600 text-sm">${request.reason}</p>
+                    <div class="flex flex-row">
+                        <p class="text-gray-600 text-sm">${request.isBlank ? "비공개 사연입니다." : request.reason}</p>
+                        <div class="grow"></div>
+                        <p class="text-gray-600 text-sm">${request.writer}</p>
+                    </div>
                 </div>
             `).join('');
-            console.log(request.isblind);
 
             // 애니메이션 시작
             startHighlightAnimation(requests.length);
@@ -155,14 +158,41 @@ document.addEventListener('DOMContentLoaded', () => {
         loadRequests();
     });
 
+    // 버튼 상태 전환
+    function btnStatusChange(disabled, btn) {
+        btn.textContent = disabled ? "신청 중..." : "신청하기"
+        btn.disabled = disabled
+    }
+
     // 폼 제출 처리
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        // 신청 시 버튼 비활성화
+        const btn = document.getElementById("submit")
+        btnStatusChange(true, btn)
+        
+        // 익명, 사연 비공개 처리
+        const blanks = document.querySelector("input[name='is_blank']:checked");
+        const annonymous = document.querySelector("input[name='annonymous']:checked");
+        let is_blank; let is_annony;
+
+        if (blanks.value === "blank") { // 사연 비공개
+            is_blank = true
+        } else if (blanks.value === "nblank") { // 사연 공개
+            is_blank = false
+        }
+
+        if (annonymous.value === "T") { is_annony = true } // 신청자 비공개
+        else if (annonymous.value === "F") { is_annony = false } // 신청자 공개
         
         const formData = {
             title: document.getElementById('title').value,
             artist: document.getElementById('artist').value,
-            reason: document.getElementById('reason').value
+            reason: document.getElementById('reason').value,
+            writer: document.getElementById("writer").value,
+            isBlank: is_blank,
+            isAnnonymous: is_annony
         };
 
         try {
@@ -172,14 +202,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert(`노래가 신청되었습니다.
 제목 : ${formData.title}
 가수 : ${formData.artist}
-사연 : ${formData.reason}`)
+사연 : ${formData.reason}
+신청자 : ${formData.writer}
+${formData.isBlank ? "사연이 비공개됩니다." : "사연이 공개됩니다."}
+${formData.isAnnonymous ? "방송에서 신청자가 비공개됩니다." : "방송에서 신청자가 공개됩니다."} 신청 목록에는 무조건 공개됩니다.`)
                 form.reset();
                 loadRequests();
+                btnStatusChange(false, btn)
             } else {
                 throw new Error('신청에 실패했습니다.');
             }
         } catch (error) {
             console.error('신청 중 오류가 발생했습니다:', error);
+            btnStatusChange(false, btn)
             alert('신청 중 오류가 발생했습니다. 다시 시도해주세요.');
         }
     });
@@ -197,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `).join('');
         } catch (error) {
-            console.error("일주일 급식 목록을 불러오는데 실패했습니다: ", error)
+            console.error("급식 목록을 불러오는데 실패했습니다: ", error)
         }
     };
 

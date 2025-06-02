@@ -1,3 +1,5 @@
+// const { default: axios } = require("axios");
+
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('musicRequestForm');
     const sortToggle = document.getElementById('sortToggle');
@@ -151,6 +153,78 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // 도서 신청 목록 불러오기
+    async function loadBooks() {
+        try {
+            const bookList = document.getElementById('bookList');
+            const response = await axios.get('/api/requests/books');
+            let requests = response.data;
+            
+            // 정렬 적용
+            requests.sort((a, b) => {
+                const dateA = new Date(a.createdAt);
+                const dateB = new Date(b.createdAt);
+                return isAscending ? dateA - dateB : dateB - dateA;
+            });
+            
+            bookList.innerHTML = requests.map((request, index) => `
+                <div class="request-item border rounded-lg p-4 hover:bg-gray-50 transition-all duration-300">
+                    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-sm font-medium text-gray-500">${isAscending ? index + 1 : requests.length - index}</span>
+                            <h3 class="font-semibold">${request.title}</h3>
+                            <span class="text-sm text-gray-500">-</span>
+                            <span class="text-sm text-gray-500">${request.author}</span>
+                        </div>
+                        <span class="text-xs text-gray-400 mt-1 lg:mt-0">${formatDate(request.createdAt)}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            // 애니메이션 시작
+            startHighlightAnimation(requests.length);
+
+            // 스타일 추가
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes highlightFade {
+                    0% { 
+                        background: linear-gradient(30deg, #FFFFFF 0%, #FFD8EF 33%, #FFEBD9 66%, #FFFFFF 100%);
+                        background-size: 400% 400%;
+                        background-position: 0% 50%;
+                        transform: scale(1);
+                    }
+                    30% { 
+                        background: linear-gradient(30deg, #FFFFFF 0%, #FFD8EF 33%, #FFEBD9 66%, #FFFFFF 100%);
+                        background-size: 400% 400%;
+                        background-position: 50% 50%;
+                        transform: scale(1.02);
+                    }
+                    40% { 
+                        background: linear-gradient(30deg, #FFFFFF 0%, #FFD8EF 33%, #FFEBD9 66%, #FFFFFF 100%);
+                        background-size: 400% 400%;
+                        background-position: 50% 50%;
+                        transform: scale(1.02);
+                    }
+                    100% { 
+                        background: linear-gradient(30deg, #FFFFFF 0%, #FFD8EF 33%, #FFEBD9 66%, #FFFFFF 100%);
+                        background-size: 400% 400%;
+                        background-position: 100% 50%;
+                        transform: scale(1);
+                    }
+                }
+                .highlight-animation {
+                    animation: highlightFade 2s ease-in-out;
+                    transform-origin: center;
+                }
+            `;
+            document.head.appendChild(style);
+
+        } catch (error) {
+            console.error('신청 목록을 불러오는데 실패했습니다:', error);
+        }
+    }
+
     // 정렬 토글 이벤트 처리
     sortToggle.addEventListener('click', () => {
         isAscending = !isAscending;
@@ -169,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
 
         // 신청 시 버튼 비활성화
-        const btn = document.getElementById("submit")
+        const btn = document.getElementById("musicSubmit")
         btnStatusChange(true, btn)
         
         // 익명, 사연 비공개 처리
@@ -219,22 +293,38 @@ ${formData.isAnnonymous ? "방송에서 신청자가 비공개됩니다." : "방
         }
     });
 
-    // 급식 불러오기
-    async function loadFood() {
-        try {
-            const response = await axios.get('/api/requests/food');
-            let requests = response.data;
-            
-            foodList.innerHTML = requests.map((request, index) => `
-                <p class="text-center text-2xl font-bold">오늘의 급식</p>
-                <div class="border rounded-lg p-4 hover:bg-gray-50 transition-all duration-300 my-3">
-                    <p class="text-gray-600 text-sm">${request.food}</p>
-                </div>
-            `).join('');
-        } catch (error) {
-            console.error("급식 목록을 불러오는데 실패했습니다: ", error)
+    // 도서 신청 폼
+    const bookForm = document.getElementById("bookRequestForm")
+    bookForm.addEventListener("submit", async (e) => {
+        e.preventDefault()
+
+        // 신청 시 버튼 비활성화
+        const btn = document.getElementById("bookSubmit")
+        btnStatusChange(true, btn)
+
+        const formData = {
+            title: document.getElementById("bookTitle").value,
+            author: document.getElementById("author").value
         }
-    };
+
+        try {
+            const response = await axios.post('/api/requests/books', formData);
+
+            if (response.status === 201) {
+                alert(`도서가 신청되었습니다.
+도서명 : ${formData.title}
+저자 : ${formData.author}`)
+                bookForm.reset()
+                loadBooks()
+                btnStatusChange(false, btn)
+            } else {
+                throw new Error("신청에 실패했습니다.")
+            }
+        } catch (error) {
+            btnStatusChange(false, btn)
+            alert('신청 중 오류가 발생했습니다. 다시 시도해주세요.');
+        }
+    })
 
     // 데이터베이스 초기화 관련 코드
     const hiddenResetButton = document.getElementById('hiddenResetButton');
@@ -281,5 +371,5 @@ ${formData.isAnnonymous ? "방송에서 신청자가 비공개됩니다." : "방
 
     // 초기 로드
     loadRequests();
-    loadFood();
+    loadBooks();
 }); 

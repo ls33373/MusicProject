@@ -48,11 +48,6 @@
 <!-- <body class="gradient-animate min-h-screen"> -->
 <body class="min-h-screen">
     <div class="container mx-auto px-4 py-8">
-        <div class="relative mb-8">
-            <h1 class="text-base md:text-3xl font-bold text-center">!! 풍생고 학생들의 신청곡 및 사연 !!</h1>
-            <h2 class="text-sm md:text-2xl font-bold text-center text-gray-700 mt-2">by. 코딩클래스</h2>
-        </div>
-        
         <!-- 숨겨진 초기화 버튼 (우측 하단에 작게 배치) -->
         <button id="hiddenResetButton" 
             class="fixed bottom-4 right-4 text-xs text-gray-300 hover:text-gray-500 transition-colors">
@@ -81,9 +76,16 @@
             </div>
         </div>
 
-        <!-- 메인 컨텐츠 영역 (반응형 레이아웃) -->
-        <div class="flex flex-col lg:flex-row gap-8">
-            <div class="flex flex-col lg:flex-col lg:w-2/5 gap-8">
+        <!-- 메인 콘텐츠 -->
+        <div class="flex flex-row gap-8">           
+            <!-- 음악 신청 영역 (반응형 레이아웃) -->
+            <div class="flex flex-col lg:w-3/6 gap-8">
+                <!-- 제목 -->
+                <div class="relative my-3">
+                    <h1 class="text-base md:text-3xl font-bold text-center">!! 풍생고 학생들의 신청곡 및 사연 !!</h1>
+                    <h2 class="md:text-4xl font-bold text-center text-gray-700 mt-2">by. 코딩클래스</h2>
+                </div>
+                
                 <!-- 음악 신청 폼 -->
                 <div class="flex flex-col lg:flex-col gap-8">
                     <div class="bg-white rounded-lg shadow-md p-6">
@@ -138,7 +140,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button id="submit" type="submit"
+                            <button id="musicSubmit" type="submit"
                                 class="w-full gradient-button font-bold text-white py-2 px-4 rounded-md shadow-md">
                                 신청하기
                             </button>
@@ -146,26 +148,75 @@
                     </div>
                 </div>
 
-                <!-- 일주일 급식표 -->
-                <div id="foodList" class="bg-white rounded-lg shadow-md p-6">
-                    <!-- 여기에 일주일 급식표가 동적으로 추가됩니다 -->
+                <!-- 신청 목록 -->
+                <div>
+                    <div class="bg-white rounded-lg shadow-md">
+                        <div class="flex justify-between items-center px-6 pt-6">
+                            <h2 class="text-xl font-semibold">신청 목록</h2>
+                            <button id="sortToggle" class="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
+                                <span>정렬</span>
+                                <svg id="sortIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9M3 12h5"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div id="requestList" class="space-y-4 lg:max-h-[calc(100vh-300px)] overflow-x-hidden px-6 py-4">
+                            <!-- 여기에 신청 목록이 동적으로 추가됩니다 -->
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- 신청 목록 -->
-            <div class="lg:w-3/5">
-                <div class="bg-white rounded-lg shadow-md">
-                    <div class="flex justify-between items-center px-6 pt-6">
-                        <h2 class="text-xl font-semibold">신청 목록</h2>
-                        <button id="sortToggle" class="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
-                            <span>정렬</span>
-                            <svg id="sortIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9M3 12h5"></path>
-                            </svg>
-                        </button>
+            <!-- 도서 신청 영역 -->
+            <div class="flex flex-col lg:w-3/6 gap-8">
+                <!-- 제목 -->
+                <div class="relative my-3">
+                    <h1 class="text-base md:text-3xl font-bold text-center">!! 우리 학교 도서관에서 읽고 싶은 책 !!</h1>
+                    <h2 class="md:text-4xl font-bold text-center text-gray-700 mt-2">by. 코딩클래스</h2>
+                </div>
+
+                <!-- 도서 신청 폼 -->
+                <div class="flex flex-col lg:flex-col gap-8">
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div class="flex flex-row">
+                            <h2 class="text-xl font-semibold mb-4">도서 신청</h2>
+                            <div class="grow"></div>
+                            <p class="text-lg">학교 도서관에 없는데 읽고 싶은 책을 신청해주세요!!</p>
+                        </div>
+                        <form id="bookRequestForm" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">도서명</label>
+                                <input type="text" id="bookTitle" required
+                                    class="mt-1 block w-full rounded-md border-1 border-gray-500 shadow focus:border-blue-200 focus:ring-blue-200 min-h-[30px]">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">저자</label>
+                                <input type="text" id="author" required
+                                    class="mt-1 block w-full rounded-md border-1 border-gray-500 shadow focus:border-blue-200 focus:ring-blue-200 min-h-[30px]">
+                            </div>
+                            <button id="bookSubmit" type="submit"
+                                class="w-full gradient-button font-bold text-white py-2 px-4 rounded-md shadow-md">
+                                신청하기
+                            </button>
+                        </form>
                     </div>
-                    <div id="requestList" class="space-y-4 lg:max-h-[calc(100vh-300px)] overflow-x-hidden px-6 py-4">
-                        <!-- 여기에 신청 목록이 동적으로 추가됩니다 -->
+                </div>
+
+                <!-- 도서 신청 목록 -->
+                <div>
+                    <div class="bg-white rounded-lg shadow-md">
+                        <div class="flex justify-between items-center px-6 pt-6">
+                            <h2 class="text-xl font-semibold">신청 목록</h2>
+                            <button id="sortToggle" class="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900">
+                                <span>정렬</span>
+                                <svg id="sortIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9M3 12h5"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <div id="bookList" class="space-y-4 lg:max-h-[calc(100vh-300px)] overflow-x-hidden px-6 py-4">
+                            <!-- 여기에 신청 목록이 동적으로 추가됩니다 -->
+                        </div>
                     </div>
                 </div>
             </div>

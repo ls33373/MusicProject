@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const Request = require('../models/Request');
-const Food = require('../models/Food');
 const Book = require('../models/Book');
 
 // 모든 신청 목록 조회
@@ -38,7 +37,8 @@ router.post('/', async (req, res) => {
 router.post('/books', async (req, res) => {
     const request = new Book({
         title: req.body.title,
-        author: req.body.author
+        author: req.body.author,
+        writer: req.body.writer
     });
 
     try {
@@ -58,16 +58,6 @@ router.get("/books", async (req, res) => {
         res.status(500).json({ message: error.message })
     }
 })
-
-// 일주일 급식 불러오기
-router.get("/food", async (req, res) => {
-    try {
-        const response = await Food.find({"date": new Date().getDate()});
-        res.json(response);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
 
 // 방송부 전용 신청 목록 불러오기
 router.get("/broadcast", async (req, res) => {

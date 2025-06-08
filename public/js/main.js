@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let isAscending = true; // 기본값은 오름차순
     let currentHighlightIndex = 0; // 현재 강조되는 인덱스
     let highlightInterval; // 강조 효과를 위한 인터벌 ID
+    let is_reset = false; // 초기화 여부
+    let weekCount = 0; // 2주마다 한 번씩 초기화하기 위해 주차 카운트
 
     // 로딩 상태 관리
     function showLoading() {
@@ -225,6 +227,32 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // 매주 일요일에 음악 신청 목록 초기화
+    // ################### 아이디어 생각해서 기능 수정 ######################
+    // 일요일마다 초기화하는데 일요일에는 기능을 사용하지 않음.
+    // 이러면 주기적으로 초기화 루틴이 돌거나 월 ~ 금 사이에 초기화가 진행되어야 함.
+    // 초기화 루틴을 사용한다면 어느 기능이 작동할 때 초기화 루틴도 돌게할 지 정해야 함.
+    async function resetMusic() {
+        // 요일 구하기
+        let date = new Date().getDay() // 0: 일, 1: 월, 2: 화, 3: 수, 4: 목, 5: 금, 6:토
+        
+        if (date === 0 && weekCount === 2 && !is_reset) { // 일요일이면 (2주 간격으로)
+            try {
+                const response = await axios.post("/api/requests/reset")
+                loadRequests()
+                is_reset = true
+            } catch (error) {
+                console.error('데이터베이스 초기화 실패:', error);
+            }
+        } else if (date === 0 && weekCount < 2) { // 매주 일요일마다 주차 카운트 + 1
+            weekCount += 1
+        }
+
+        if (date !== 0) { // 일요일이 아니면
+            is_reset = false
+        }
+    }
+
     // 정렬 토글 이벤트 처리
     sortToggle.addEventListener('click', () => {
         isAscending = !isAscending;
@@ -304,13 +332,15 @@ ${formData.isAnnonymous ? "방송에서 신청자가 비공개됩니다." : "방
 
         const formData = {
             title: document.getElementById("bookTitle").value,
-            author: document.getElementById("author").value
+            author: document.getElementById("author").value,
+            writer: document.getElementById("bookWriter").value
         }
 
         try {
             const response = await axios.post('/api/requests/books', formData);
 
             if (response.status === 201) {
+                console.log(3)
                 alert(`도서가 신청되었습니다.
 도서명 : ${formData.title}
 저자 : ${formData.author}`)

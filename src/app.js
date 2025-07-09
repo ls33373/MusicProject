@@ -112,7 +112,10 @@ app.use((err, req, res, next) => {
     });
 });
 
-// 
+// 도서관 전용 페이지 라우트
+app.get("/library", (req, res) => {
+    res.sendFile(path.join(__dirname, "views", "library.html"))
+})
 
 // 서버 시작 (로컬 개발 환경에서만)
 const PORT = process.env.PORT || 3000;

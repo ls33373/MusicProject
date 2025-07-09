@@ -90,12 +90,28 @@ router.delete("/delete", async (req, res) => {
         const result = await Request.deleteOne({ createdAt: date });
 
         res.status(201).json({
-            message: "노래 데이터를 성공적으로 삭제했습니다.",
+            message: "데이터를 성공적으로 삭제했습니다.",
             deletedCount: result.deletedCount
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
+
+// 책 삭제
+router.delete("/delete/book", async (req, res) => {
+    try {
+        const { createdAt } = req.body;
+        const date = new Date(createdAt);
+        const result = await Book.deleteOne({ createdAt: date });
+    
+        res.status(201).json({
+            message: "책 데이터를 성공적으로 삭제했습니다.",
+            deletedCount: result.deletedCount
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+})
 
 module.exports = router; 

@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                 <span class="text-sm text-gray-500">-</span>
                                 <span class="text-sm text-gray-500">${request.author}</span>
                             </div>
-                            <p class="text-gray-600 text-sm max-w-700">${request.writer}</p>
+                            <p class="text-gray-600 text-sm max-w-700">신청자 : ${request.writer}</p>
                         </div>
                         <div class="flex items-center flex-col gap-3">
                             <span class="text-xs text-gray-400 mt-1 lg:mt-0">${formatDate(request.createdAt)}</span>
